@@ -3,6 +3,7 @@
 <head>
 	<title>Node Starter</title>
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script type="text/javascript">
@@ -11,7 +12,6 @@
 
 			// array to morsecode
 			var codes = [];
-
 			function getWords() {
 
 				$.ajax({
@@ -19,20 +19,21 @@
 					url: 'http://localhost:3000/words'
 				}).then(function(data){
 					// get data as morsecode
-					// console.log('data: ', data);
-					codes.push(data.map((val) => {
-						return val.codedword
-					}))
-					console.log('codes: ', codes);
-				});
-			}
+					(data.forEach(function(val){
+						codes.push(val.codedword);
+					}));
+					//codes array now stores values
+					console.log('codes', codes);
+					$("#auto-input").autocomplete({
+						source: codes
+					});
+
+	    	});
+			
+
+			};
 
 			getWords();
-
-			//jQuery autcomplete method
-			$("#words").autocomplete({
-				source: codes
-			});
 
 
 		}); // end of document.ready
@@ -41,7 +42,8 @@
 </head>
 <body>
 	<div id="wrapper">
-		<input type="text" id="words">
+		<input type="text" id="auto-input">
+
 	</div>
 </body>
 </html>
