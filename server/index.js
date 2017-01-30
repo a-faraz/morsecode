@@ -25,19 +25,41 @@ app.get('/', (req, res) => {
 	res.sendFile(index);
 });
 
-app.get('/words', (req, res) => {
-	return knex.select().table('words')
-		.then(function(data){
-			res.send(data);
-		});
-})
-
 // load stylesheet
 app.get('/css/styles.css', function(req, res) {
 	// used path.resolve with relative directory
 	res.sendFile(path.resolve(__dirname , '../client/css/styles.css'));
 
 });
+
+app.get('/words', (req, res) => {
+	const encoded = [];
+	function isPalindrome(str){
+		var backwardsStr = str.split('').reverse().join('');
+
+		if (str === backwardsStr) {
+			return true;
+		} else {
+			return false;
+		}
+	} 
+
+	return knex.select().table('words')
+		.then(function(data){
+			// data is an array of objects
+			//console.log('data ', data);
+			data.forEach(function(val){
+				// only send words that are palindromes
+				if (isPalindrome(val.word)) {
+					encoded.push(val);
+				}
+			});
+			// encoded is an array of palindrome objects
+			// console.log('encoded ', encoded);
+			res.send(encoded);
+		});
+})
+
 
 app.listen(port, () => {
 	console.log('listening on port ' + port);

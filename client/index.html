@@ -10,26 +10,32 @@
 		$(function(){
 			// body...
 
-			// array to morsecode
-			var codes = [];
+			// create source array for auto-complete
+			var autofills = [];
 			function getWords() {
 
+				// make request to server for list of palindrome words
 				$.ajax({
 					method: 'GET',
 					url: 'http://localhost:3000/words'
 				}).then(function(data){
-					// get data as morsecode
-					(data.forEach(function(val){
-						codes.push(val.codedword);
-					}));
-					//codes array now stores values
-					console.log('codes', codes);
-					$("#auto-input").autocomplete({
-						source: codes
-					});
-
-	    	});
-			
+					// console.log('data', data);
+    	 		for(var prop of data) {
+						// console.log('prop', prop);
+						autofills.push(
+								{
+									label: prop.word,
+									value: prop.codedword
+								}
+							)
+					};
+						console.log('autofills == ', autofills);
+					
+					$( "#auto-input").autocomplete({
+		      	minLength: 1,
+		      	source: autofills
+		    	})
+	   		});
 
 			};
 
@@ -37,13 +43,12 @@
 
 
 		}); // end of document.ready
-
+		
 	</script>
 </head>
 <body>
 	<div id="wrapper">
 		<input type="text" id="auto-input">
-
 	</div>
 </body>
 </html>
